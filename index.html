@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crypto Wallet</title>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #0b0d10;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    .app {
+      max-width: 500px;
+      margin: auto;
+    }
+
+    h1 {
+      margin-bottom: 25px;
+    }
+
+    .card {
+      background: #171a20;
+      border-radius: 20px;
+      padding: 22px;
+      margin-bottom: 15px;
+    }
+
+    .label {
+      color: #8f98a5;
+      font-size: 14px;
+    }
+
+    .balance {
+      font-size: 36px;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+
+    .asset {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 0;
+      border-bottom: 1px solid #292e36;
+    }
+
+    .asset:last-child {
+      border-bottom: 0;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 14px;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      background: #242a32;
+      color: white;
+    }
+
+    .main {
+      background: white;
+      color: black;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <h1>💎 Crypto Wallet</h1>
+
+  <div class="card">
+    <div class="label">Общий баланс</div>
+    <div class="balance">$0.00</div>
+  </div>
+
+  <div class="card">
+
+    <div class="asset">
+      <div>
+        <b>TON</b><br>
+        <span class="label">Toncoin</span>
+      </div>
+
+      <div>
+        0.00 TON
+      </div>
+    </div>
+
+    <div class="asset">
+      <div>
+        <b>USDT</b><br>
+        <span class="label">Tether</span>
+      </div>
+
+      <div>
+        0.00 USDT
+      </div>
+    </div>
+
+  </div>
+
+  <div class="buttons">
+    <button class="main" onclick="swap()">Обменять</button>
+    <button onclick="deposit()">Пополнить</button>
+    <button onclick="withdraw()">Вывести</button>
+    <button onclick="history()">История</button>
+  </div>
+
+</div>
+
+<script>
+
+const tg = window.Telegram.WebApp;
+
+tg.ready();
+tg.expand();
+
+function swap() {
+  tg.showAlert("Обмен TON / USDT подключим следующим этапом.");
+}
+
+function deposit() {
+  tg.showAlert("TON Connect подключим следующим этапом.");
+}
+
+function withdraw() {
+  tg.showAlert("Вывод будет подключён после настройки кошелька.");
+}
+
+function history() {
+  tg.showAlert("История операций пока пустая.");
+}
+
+</script>
+
+</body>
+</html>
