@@ -17,77 +17,156 @@
 
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
       background: #0b0f14;
-      color: white;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
     }
 
     .app {
       max-width: 480px;
       margin: auto;
-      padding: 20px;
+      padding: 18px;
     }
 
-    h1 {
-      margin-top: 10px;
-      font-size: 28px;
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: 700;
+    }
+
+    .network {
+      font-size: 12px;
+      background: #17202b;
+      padding: 7px 10px;
+      border-radius: 10px;
+      color: #72d6ff;
     }
 
     .card {
       background: #151b23;
       border-radius: 20px;
       padding: 20px;
-      margin-top: 16px;
+      margin-top: 15px;
     }
 
-    .balance {
-      font-size: 34px;
-      font-weight: bold;
-      margin-top: 10px;
+    .label {
+      color: #8995a5;
+      font-size: 14px;
+    }
+
+    .total {
+      font-size: 36px;
+      font-weight: 700;
+      margin: 8px 0 20px;
     }
 
     .asset {
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      padding: 16px 0;
-      border-bottom: 1px solid #29313d;
+      padding: 15px 0;
+      border-bottom: 1px solid #27303b;
     }
 
     .asset:last-child {
       border-bottom: none;
     }
 
+    .asset-name {
+      font-weight: 600;
+    }
+
+    .asset-balance {
+      text-align: right;
+    }
+
+    .asset-amount {
+      font-weight: 600;
+    }
+
+    .asset-usd {
+      color: #8995a5;
+      font-size: 12px;
+      margin-top: 3px;
+    }
+
     button {
       width: 100%;
-      border: none;
+      border: 0;
       border-radius: 14px;
       padding: 15px;
-      margin-top: 12px;
+      margin-top: 10px;
       font-size: 16px;
-      font-weight: bold;
+      font-weight: 600;
       cursor: pointer;
     }
 
-    .connect {
+    .primary {
       background: #0098ea;
       color: white;
     }
 
-    .action {
+    .secondary {
       background: #202833;
       color: white;
     }
 
+    .danger {
+      background: #332024;
+      color: #ff8e9b;
+    }
+
     .address {
-      word-break: break-all;
-      font-size: 12px;
-      color: #8d99a8;
       margin-top: 15px;
+      padding: 12px;
+      background: #0d131a;
+      border-radius: 12px;
+      color: #9ba7b5;
+      font-size: 12px;
+      word-break: break-all;
     }
 
     .status {
-      color: #8d99a8;
       margin-top: 10px;
+      color: #8995a5;
+      font-size: 13px;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .actions button {
+      margin-top: 0;
+    }
+
+    .history-item {
+      padding: 13px 0;
+      border-bottom: 1px solid #27303b;
+      font-size: 14px;
+    }
+
+    .history-item:last-child {
+      border-bottom: 0;
+    }
+
+    .empty {
+      color: #8995a5;
+      text-align: center;
+      padding: 15px 0;
+    }
+
+    .small {
+      color: #8995a5;
+      font-size: 12px;
+      line-height: 1.5;
     }
   </style>
 </head>
@@ -96,27 +175,59 @@
 
 <div class="app">
 
-  <h1>VaultWallet</h1>
+  <div class="header">
+    <div class="logo">VaultWallet</div>
+    <div class="network">TON Mainnet</div>
+  </div>
 
   <div class="card">
 
-    <div>Общий баланс</div>
+    <div class="label">Общий баланс</div>
 
-    <div class="balance">
+    <div class="total" id="totalBalance">
       $0.00
     </div>
 
     <div class="asset">
-      <span>TON</span>
-      <span id="tonBalance">0 TON</span>
+
+      <div>
+        <div class="asset-name">TON</div>
+        <div class="small">The Open Network</div>
+      </div>
+
+      <div class="asset-balance">
+        <div class="asset-amount" id="tonBalance">
+          0 TON
+        </div>
+
+        <div class="asset-usd" id="tonUsd">
+          —
+        </div>
+      </div>
+
     </div>
 
     <div class="asset">
-      <span>USDT</span>
-      <span id="usdtBalance">0 USDT</span>
+
+      <div>
+        <div class="asset-name">USDT</div>
+        <div class="small">TON Jetton</div>
+      </div>
+
+      <div class="asset-balance">
+        <div class="asset-amount" id="usdtBalance">
+          0 USDT
+        </div>
+
+        <div class="asset-usd">
+          —
+        </div>
+      </div>
+
     </div>
 
   </div>
+
 
   <div class="card">
 
@@ -124,35 +235,70 @@
 
     <div id="ton-connect"></div>
 
-    <div id="status" class="status">
+    <div class="status" id="status">
       Кошелёк не подключён
     </div>
 
-    <div id="address" class="address"></div>
+    <div class="address" id="address" style="display:none;"></div>
+
+    <button
+      class="secondary"
+      id="copyAddress"
+      style="display:none;"
+      onclick="copyWalletAddress()">
+      Скопировать адрес
+    </button>
 
   </div>
 
+
   <div class="card">
 
-    <button class="action">
-      Получить
-    </button>
+    <div class="actions">
 
-    <button class="action">
-      Отправить
-    </button>
+      <button
+        class="secondary"
+        onclick="receive()">
+        Получить
+      </button>
 
-    <button class="action">
-      Обменять
-    </button>
+      <button
+        class="secondary"
+        onclick="send()">
+        Отправить
+      </button>
 
-    <button class="action">
-      История
-    </button>
+      <button
+        class="secondary"
+        onclick="swap()">
+        Обменять
+      </button>
+
+      <button
+        class="secondary"
+        onclick="historyPage()">
+        История
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <h3>Последние операции</h3>
+
+    <div id="history">
+      <div class="empty">
+        Подключите кошелёк
+      </div>
+    </div>
 
   </div>
 
 </div>
+
 
 <script>
 
@@ -161,35 +307,376 @@
   tg.ready();
   tg.expand();
 
+
+  let walletAddress = null;
+
+
+  /*
+   * TON CONNECT
+   */
+
   const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+
     manifestUrl:
       'https://konenkoifg.github.io/VaultWallet/tonconnect-manifest.json',
 
-    buttonRootId: 'ton-connect'
+    buttonRootId:
+      'ton-connect'
+
   });
 
-  tonConnectUI.onStatusChange(wallet => {
 
-    const status = document.getElementById('status');
-    const address = document.getElementById('address');
+  tonConnectUI.onStatusChange(async wallet => {
+
+    const status =
+      document.getElementById('status');
+
+    const address =
+      document.getElementById('address');
+
+    const copyButton =
+      document.getElementById('copyAddress');
+
 
     if (wallet) {
 
-      status.innerText = 'Кошелёк подключён';
+      walletAddress =
+        wallet.account.address;
+
+      status.innerText =
+        'Кошелёк подключён';
 
       address.innerText =
-        'Адрес: ' + wallet.account.address;
+        walletAddress;
 
-    } else {
+      address.style.display =
+        'block';
+
+      copyButton.style.display =
+        'block';
+
+
+      await loadWalletData();
+
+    }
+
+    else {
+
+      walletAddress = null;
 
       status.innerText =
         'Кошелёк не подключён';
 
       address.innerText = '';
 
+      address.style.display =
+        'none';
+
+      copyButton.style.display =
+        'none';
+
     }
 
   });
+
+
+  /*
+   * LOAD TON BALANCE
+   */
+
+  async function loadWalletData() {
+
+    if (!walletAddress) {
+      return;
+    }
+
+
+    try {
+
+      const response =
+        await fetch(
+          'https://tonapi.io/v2/accounts/' +
+          encodeURIComponent(walletAddress)
+        );
+
+
+      if (!response.ok) {
+        throw new Error(
+          'Ошибка TON API'
+        );
+      }
+
+
+      const data =
+        await response.json();
+
+
+      const nanoTon =
+        Number(data.balance || 0);
+
+
+      const ton =
+        nanoTon / 1000000000;
+
+
+      document.getElementById(
+        'tonBalance'
+      ).innerText =
+        ton.toFixed(4) + ' TON';
+
+
+      /*
+       * Пока не подключаем
+       * цену TON.
+       */
+
+      document.getElementById(
+        'tonUsd'
+      ).innerText =
+        'Баланс блокчейна';
+
+
+      document.getElementById(
+        'totalBalance'
+      ).innerText =
+        ton.toFixed(4) + ' TON';
+
+
+      loadHistory();
+
+    }
+
+    catch (error) {
+
+      console.error(error);
+
+      document.getElementById(
+        'status'
+      ).innerText =
+        'Кошелёк подключён, но баланс пока не загрузился';
+
+    }
+
+  }
+
+
+  /*
+   * COPY ADDRESS
+   */
+
+  async function copyWalletAddress() {
+
+    if (!walletAddress) {
+      return;
+    }
+
+    try {
+
+      await navigator.clipboard.writeText(
+        walletAddress
+      );
+
+      tg.showPopup({
+
+        title: 'VaultWallet',
+
+        message:
+          'Адрес скопирован',
+
+        buttons: [
+          {
+            type: 'ok'
+          }
+        ]
+
+      });
+
+    }
+
+    catch (error) {
+
+      alert(walletAddress);
+
+    }
+
+  }
+
+
+  /*
+   * RECEIVE
+   */
+
+  function receive() {
+
+    if (!walletAddress) {
+
+      alert(
+        'Сначала подключите кошелёк'
+      );
+
+      return;
+
+    }
+
+
+    alert(
+      'Ваш адрес для получения TON:\n\n' +
+      walletAddress
+    );
+
+  }
+
+
+  /*
+   * SEND
+   */
+
+  function send() {
+
+    if (!walletAddress) {
+
+      alert(
+        'Сначала подключите кошелёк'
+      );
+
+      return;
+
+    }
+
+
+    alert(
+      'Отправка TON будет подключена следующим этапом.'
+    );
+
+  }
+
+
+  /*
+   * SWAP
+   */
+
+  function swap() {
+
+    if (!walletAddress) {
+
+      alert(
+        'Сначала подключите кошелёк'
+      );
+
+      return;
+
+    }
+
+
+    alert(
+      'TON ↔ USDT Swap подключим следующим этапом.'
+    );
+
+  }
+
+
+  /*
+   * HISTORY
+   */
+
+  async function loadHistory() {
+
+    if (!walletAddress) {
+      return;
+    }
+
+
+    try {
+
+      const response =
+        await fetch(
+          'https://tonapi.io/v2/accounts/' +
+          encodeURIComponent(walletAddress) +
+          '/events?limit=5'
+        );
+
+
+      if (!response.ok) {
+        return;
+      }
+
+
+      const data =
+        await response.json();
+
+
+      const history =
+        document.getElementById(
+          'history'
+        );
+
+
+      if (
+        !data.events ||
+        data.events.length === 0
+      ) {
+
+        history.innerHTML =
+          '<div class="empty">' +
+          'Операций пока нет' +
+          '</div>';
+
+        return;
+
+      }
+
+
+      history.innerHTML = '';
+
+
+      data.events.forEach(event => {
+
+        const item =
+          document.createElement(
+            'div'
+          );
+
+
+        item.className =
+          'history-item';
+
+
+        item.innerText =
+          'Транзакция: ' +
+          event.event_id;
+
+
+        history.appendChild(item);
+
+      });
+
+    }
+
+    catch (error) {
+
+      console.error(error);
+
+    }
+
+  }
+
+
+  function historyPage() {
+
+    if (!walletAddress) {
+
+      alert(
+        'Сначала подключите кошелёк'
+      );
+
+      return;
+
+    }
+
+    loadHistory();
+
+  }
+
 
 </script>
 
