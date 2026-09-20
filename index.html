@@ -3,9 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Crypto Wallet</title>
+
+  <title>VaultWallet</title>
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <script src="https://unpkg.com/@tonconnect/ui@2.3.0/dist/tonconnect-ui.min.js"></script>
 
   <style>
     * {
@@ -14,71 +17,77 @@
 
     body {
       margin: 0;
-      padding: 20px;
-      background: #0b0d10;
-      color: white;
       font-family: Arial, sans-serif;
+      background: #0b0f14;
+      color: white;
     }
 
     .app {
-      max-width: 500px;
+      max-width: 480px;
       margin: auto;
+      padding: 20px;
     }
 
     h1 {
-      margin-bottom: 25px;
+      margin-top: 10px;
+      font-size: 28px;
     }
 
     .card {
-      background: #171a20;
+      background: #151b23;
       border-radius: 20px;
-      padding: 22px;
-      margin-bottom: 15px;
-    }
-
-    .label {
-      color: #8f98a5;
-      font-size: 14px;
+      padding: 20px;
+      margin-top: 16px;
     }
 
     .balance {
-      font-size: 36px;
+      font-size: 34px;
       font-weight: bold;
-      margin-top: 8px;
+      margin-top: 10px;
     }
 
     .asset {
       display: flex;
       justify-content: space-between;
-      padding: 15px 0;
-      border-bottom: 1px solid #292e36;
+      padding: 16px 0;
+      border-bottom: 1px solid #29313d;
     }
 
     .asset:last-child {
-      border-bottom: 0;
-    }
-
-    .buttons {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 15px;
+      border-bottom: none;
     }
 
     button {
-      border: 0;
+      width: 100%;
+      border: none;
       border-radius: 14px;
-      padding: 16px;
+      padding: 15px;
+      margin-top: 12px;
       font-size: 16px;
       font-weight: bold;
       cursor: pointer;
-      background: #242a32;
+    }
+
+    .connect {
+      background: #0098ea;
       color: white;
     }
 
-    .main {
-      background: white;
-      color: black;
+    .action {
+      background: #202833;
+      color: white;
+    }
+
+    .address {
+      word-break: break-all;
+      font-size: 12px;
+      color: #8d99a8;
+      margin-top: 15px;
+    }
+
+    .status {
+      color: #8d99a8;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -87,70 +96,100 @@
 
 <div class="app">
 
-  <h1>💎 Crypto Wallet</h1>
-
-  <div class="card">
-    <div class="label">Общий баланс</div>
-    <div class="balance">$0.00</div>
-  </div>
+  <h1>VaultWallet</h1>
 
   <div class="card">
 
-    <div class="asset">
-      <div>
-        <b>TON</b><br>
-        <span class="label">Toncoin</span>
-      </div>
+    <div>Общий баланс</div>
 
-      <div>
-        0.00 TON
-      </div>
+    <div class="balance">
+      $0.00
     </div>
 
     <div class="asset">
-      <div>
-        <b>USDT</b><br>
-        <span class="label">Tether</span>
-      </div>
+      <span>TON</span>
+      <span id="tonBalance">0 TON</span>
+    </div>
 
-      <div>
-        0.00 USDT
-      </div>
+    <div class="asset">
+      <span>USDT</span>
+      <span id="usdtBalance">0 USDT</span>
     </div>
 
   </div>
 
-  <div class="buttons">
-    <button class="main" onclick="swap()">Обменять</button>
-    <button onclick="deposit()">Пополнить</button>
-    <button onclick="withdraw()">Вывести</button>
-    <button onclick="history()">История</button>
+  <div class="card">
+
+    <h3>Кошелёк</h3>
+
+    <div id="ton-connect"></div>
+
+    <div id="status" class="status">
+      Кошелёк не подключён
+    </div>
+
+    <div id="address" class="address"></div>
+
+  </div>
+
+  <div class="card">
+
+    <button class="action">
+      Получить
+    </button>
+
+    <button class="action">
+      Отправить
+    </button>
+
+    <button class="action">
+      Обменять
+    </button>
+
+    <button class="action">
+      История
+    </button>
+
   </div>
 
 </div>
 
 <script>
 
-const tg = window.Telegram.WebApp;
+  const tg = window.Telegram.WebApp;
 
-tg.ready();
-tg.expand();
+  tg.ready();
+  tg.expand();
 
-function swap() {
-  tg.showAlert("Обмен TON / USDT подключим следующим этапом.");
-}
+  const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+    manifestUrl:
+      'https://konenkoifg.github.io/VaultWallet/tonconnect-manifest.json',
 
-function deposit() {
-  tg.showAlert("TON Connect подключим следующим этапом.");
-}
+    buttonRootId: 'ton-connect'
+  });
 
-function withdraw() {
-  tg.showAlert("Вывод будет подключён после настройки кошелька.");
-}
+  tonConnectUI.onStatusChange(wallet => {
 
-function history() {
-  tg.showAlert("История операций пока пустая.");
-}
+    const status = document.getElementById('status');
+    const address = document.getElementById('address');
+
+    if (wallet) {
+
+      status.innerText = 'Кошелёк подключён';
+
+      address.innerText =
+        'Адрес: ' + wallet.account.address;
+
+    } else {
+
+      status.innerText =
+        'Кошелёк не подключён';
+
+      address.innerText = '';
+
+    }
+
+  });
 
 </script>
 
